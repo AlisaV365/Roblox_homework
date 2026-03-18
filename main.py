@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 import sqlite3
 import random
 from datetime import datetime
@@ -31,3 +31,5 @@ def open_chest(user_id: int):
     cur.execute("UPDATE users SET coins = coins + ? WHERE user_id=?", (reward, user_id))
     conn.commit()
     return {"reward": reward}
+
+app.mount("/webapp", StaticFiles(directory="webapp", html=True), name="webapp")
