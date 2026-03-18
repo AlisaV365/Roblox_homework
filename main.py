@@ -1,10 +1,31 @@
+Перейти на версию для людей с ограниченными возможностями.
+
+Сгруппируйте письма себе в отдельную папку, чтобы они всегда были под рукой!
+
+Включить
+Re[2]: Diff
+Алиса
+Сегодня, 22:42
+Кому:вам
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 import sqlite3
 import random
-from datetime import datetime
+import os
 
 app = FastAPI()
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# --- ПРОВЕРКА ПАПКИ ---
+WEBAPP_DIR = os.path.join(BASE_DIR, "webapp")
+
+if not os.path.exists(WEBAPP_DIR):
+    print("❌ Папка webapp НЕ найдена!")
+else:
+    print("✅ Папка webapp найдена:", WEBAPP_DIR)
+
 
 # --- БАЗА ---
 def db():
@@ -49,20 +70,11 @@ def open_chest(user_id: int):
     return {"reward": reward}
 
 
-# --- WEBAPP (ОЧЕНЬ ВАЖНО) ---
-import os
-from fastapi.staticfiles import StaticFiles
+# --- WEBAPP ---
+app.mount("/webapp", StaticFiles(directory=WEBAPP_DIR, html=True), name="webapp")
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-app.mount(
-    "/webapp",
-    StaticFiles(directory=os.path.join(BASE_DIR, "webapp"), html=True),
-    name="webapp"
-)
-
-from fastapi.responses import FileResponse
-
+# --- ROOT ---
 @app.get("/")
 def root():
-    return FileResponse(os.path.join(BASE_DIR, "webapp/index.html"))
+    return FileResponse(os.path.join(WEBAPP_DIR, "index.html"))
