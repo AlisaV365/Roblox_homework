@@ -19,7 +19,7 @@ bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
 # ⚠️ ВАЖНО: сюда вставь свой URL из Railway
-WEBAPP_URL = "https://robloxhomework-production.up.railway.app"
+WEBAPP_URL = "https://robloxhomework-production.up.railway.app/webapp/index.html"
 
 
 # --- МЕНЮ ---
