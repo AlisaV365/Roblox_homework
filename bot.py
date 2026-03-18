@@ -12,7 +12,7 @@ dp = Dispatcher()
 
 WEBAPP_URL = "http://localhost:8000/webapp/index.html"
 
-@dp.message(commands=["start"])
+@dp.message(commands=("start"))
 async def start(message: types.Message):
     kb = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(
