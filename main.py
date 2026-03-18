@@ -50,4 +50,19 @@ def open_chest(user_id: int):
 
 
 # --- WEBAPP (ОЧЕНЬ ВАЖНО) ---
-app.mount("/webapp", StaticFiles(directory="webapp", html=True), name="webapp")
+import os
+from fastapi.staticfiles import StaticFiles
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+app.mount(
+    "/webapp",
+    StaticFiles(directory=os.path.join(BASE_DIR, "webapp"), html=True),
+    name="webapp"
+)
+
+from fastapi.responses import FileResponse
+
+@app.get("/")
+def root():
+    return FileResponse(os.path.join(BASE_DIR, "webapp/index.html"))
