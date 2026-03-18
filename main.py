@@ -1,12 +1,3 @@
-Перейти на версию для людей с ограниченными возможностями.
-
-Сгруппируйте письма себе в отдельную папку, чтобы они всегда были под рукой!
-
-Включить
-Re[2]: Diff
-Алиса
-Сегодня, 22:42
-Кому:вам
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
