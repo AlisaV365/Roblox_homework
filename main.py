@@ -169,3 +169,19 @@ async def startup():
 async def run_bot():
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
+
+@dp.message(Command("add"))
+async def add_task(message: types.Message):
+    text = message.text.replace("/add ", "")
+
+    conn = db()
+    cur = conn.cursor()
+
+    cur.execute(
+        "INSERT INTO tasks (title, reward, assigned_to) VALUES (?, ?, ?)",
+        (text, 50, message.from_user.id)
+    )
+
+    conn.commit()
+
+    await message.answer(f"✅ Задание добавлено: {text}")
