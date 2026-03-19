@@ -109,12 +109,33 @@ def menu():
     ])
 
 
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
+
+WEBAPP_URL = "https://robloxhomework-production.up.railway.app/webapp/index.html"
+
+
+def menu():
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                text="🎮 Начать игру",
+                web_app=WebAppInfo(url=WEBAPP_URL)
+            )
+        ],
+        [
+            InlineKeyboardButton(text="➕ Добавить задание", callback_data="add_task")
+        ]
+    ])
+
+
 @dp.message(Command("start"))
 async def start(message: types.Message):
     await message.answer(
-        "👋 Привет!\n🎮 Открой игру ниже:",
+        f"👋 Привет, {message.from_user.first_name}!\n\n"
+        "🎮 Готов поиграть?",
         reply_markup=menu()
     )
+
     
 @dp.message(Command("add"))
 async def add_task(message: types.Message):
