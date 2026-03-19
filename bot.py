@@ -66,3 +66,14 @@ async def main():
     print("🚀 Бот запускается...")
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
+
+@dp.message(Command("parent"))
+async def set_parent(message: types.Message):
+    conn = db()
+    cur = conn.cursor()
+
+    cur.execute("INSERT OR REPLACE INTO users (user_id, role) VALUES (?, ?)",
+                (message.from_user.id, "parent"))
+    conn.commit()
+
+    await message.answer("👨 Вы родитель")
