@@ -55,29 +55,7 @@ def init_db():
     conn.close()
 
 
-init_db(
-# роли
-cur.execute("""
-CREATE TABLE IF NOT EXISTS users (
-    user_id INTEGER PRIMARY KEY,
-    role TEXT,
-    coins INTEGER DEFAULT 0,
-    level INTEGER DEFAULT 1,
-    xp INTEGER DEFAULT 0
-    )
-""")
-
-# задания
-cur.execute("""
-CREATE TABLE IF NOT EXISTS tasks (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT,
-    reward INTEGER,
-    assigned_to INTEGER,
-    status TEXT DEFAULT 'pending',
-    photo TEXT
-    )
-"""))
+init_db()
 
 
 # --- API ---
@@ -120,36 +98,6 @@ def open_chest(user_id: int):
 
     return {"reward": reward}
 
-@app.post("/complete/{task_id}")
-def complete_task(task_id: int):
-    conn = db()
-    cur = conn.cursor()
-
-    cur.execute("UPDATE tasks SET status='waiting' WHERE id=?", (task_id,))
-    conn.commit()
-
-    return {"status": "ok"}
-
-@app.post("/approve/{task_id}")
-def approve_task(task_id: int):
-    conn = db()
-    cur = conn.cursor()
-
-    cur.execute("SELECT reward, assigned_to FROM tasks WHERE id=?", (task_id,))
-    task = cur.fetchone()
-
-    if task:
-        reward, user_id = task
-
-        cur.execute("UPDATE users SET coins = coins + ?, xp = xp + ? WHERE user_id=?",
-                    (reward, reward, user_id))
-
-        cur.execute("UPDATE tasks SET status='done' WHERE id=?", (task_id,))
-
-        conn.commit()
-
-    return {"status": "approved"}
-
 
 # --- WEBAPP ---
 app.mount("/webapp", StaticFiles(directory=WEBAPP_DIR, html=True), name="webapp")
@@ -176,14 +124,6 @@ def main_menu():
         ]
     ])
 
-@dp.message(lambda msg: msg.photo)
-async def handle_photo(message: types.Message):
-    user_id = message.from_user.id
-
-    await message.answer("📸 Фото получено! Отправь ID задания")
-
-    # тут можно расширить позже (связка с задачей)
-
 
 @dp.message(Command("start"))
 async def start(message: types.Message):
@@ -205,4 +145,32 @@ async def start_bot():
 
 async def run_bot():
     await bot.delete_webhook(drop_pending_updates=True)
-    await dp.start_polling(bot)
+    await dp.start_polling(bot)0
+
+
+def init_db():
+    conn = db()
+    cur = conn.cursor()
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        user_id INTEGER PRIMARY KEY,
+        coins INTEGER DEFAULT 0,
+        level INTEGER DEFAULT 1,
+        xp INTEGER DEFAULT 0,
+        avatar TEXT
+    )
+    """)
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS tasks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT,
+        reward INTEGER,
+        status TEXT DEFAULT 'pending',
+        assigned_to INTEGER
+    )
+    """)
+
+    conn.commit()
+    conn.close()
