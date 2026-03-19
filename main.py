@@ -5,7 +5,37 @@ import sqlite3
 import random
 import os
 
+def init_db():
+    conn = sqlite3.connect("db.sqlite")
+    cur = conn.cursor()
+
+    # таблица пользователей
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        user_id INTEGER PRIMARY KEY,
+        coins INTEGER DEFAULT 0,
+        level INTEGER DEFAULT 1,
+        xp INTEGER DEFAULT 0,
+        avatar TEXT
+    )
+    """)
+
+    # таблица заданий
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS tasks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT,
+        reward INTEGER,
+        status TEXT DEFAULT 'pending',
+        assigned_to INTEGER
+    )
+    """)
+
+    conn.commit()
+    conn.close()
+    
 app = FastAPI()
+init_db()
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
