@@ -69,3 +69,11 @@ app.mount("/webapp", StaticFiles(directory=WEBAPP_DIR, html=True), name="webapp"
 @app.get("/")
 def root():
     return FileResponse(os.path.join(WEBAPP_DIR, "index.html"))
+
+
+async def main():
+    print("🚀 Бот запускается...")
+
+    await bot.delete_webhook(drop_pending_updates=True)
+
+    await dp.start_polling(bot) 
