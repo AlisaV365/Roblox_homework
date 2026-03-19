@@ -24,6 +24,16 @@ app = FastAPI()
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 WEBAPP_DIR = os.path.join(BASE_DIR, "webapp")
 
+@app.post("/complete/{task_id}")
+def complete_task(task_id: int):
+    conn = db()
+    cur = conn.cursor()
+
+    cur.execute("UPDATE tasks SET status='waiting' WHERE id=?", (task_id,))
+    conn.commit()
+
+    return {"status": "waiting"}
+
 # --- DB ---
 def db():
     return sqlite3.connect("db.sqlite")
@@ -213,3 +223,23 @@ async def add_task(message: types.Message):
     conn.commit()
 
     await message.answer(f"✅ Задание создано: {text}")
+
+
+@app.post("/approve/{task_id}")
+def approve_task(task_id: int):
+    conn = db()
+    cur = conn.cursor()
+
+    cur.execute("SELECT reward, assigned_to FROM tasks WHERE id=?", (task_id,))
+    task = cur.fetchone()
+
+    if task:
+        reward, user_id = task
+
+        cur.execute("UPDATE users SET coins = coins + ?, xp = xp + ? WHERE user_id=?",
+                    (reward, reward, user_id))
+
+        cur.execute("UPDATE tasks SET status='done' WHERE id=?", (task_id,))
+        conn.commit()
+
+    return {"status": "done"}
