@@ -136,6 +136,11 @@ async def start(message: types.Message):
         reply_markup=menu()
     )
 
+@dp.callback_query(lambda c: c.data == "add_task")
+async def add_task_callback(callback: types.CallbackQuery):
+    await callback.message.answer("✏️ Напиши задание так:\n/add Убрать комнату")
+
+
     
 @dp.message(Command("add"))
 async def add_task(message: types.Message):
