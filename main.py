@@ -56,8 +56,6 @@ def init_db():
 
 
 init_db()
-
-
 # --- API ---
 @app.get("/tasks/{user_id}")
 def get_tasks(user_id: int):
