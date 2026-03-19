@@ -55,7 +55,8 @@ def init_db():
     conn.close()
 
 
-init_db(# роли
+init_db(
+# роли
 cur.execute("""
 CREATE TABLE IF NOT EXISTS users (
     user_id INTEGER PRIMARY KEY,
@@ -63,7 +64,7 @@ CREATE TABLE IF NOT EXISTS users (
     coins INTEGER DEFAULT 0,
     level INTEGER DEFAULT 1,
     xp INTEGER DEFAULT 0
-)
+    )
 """)
 
 # задания
@@ -75,7 +76,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     assigned_to INTEGER,
     status TEXT DEFAULT 'pending',
     photo TEXT
-)
+    )
 """))
 
 
