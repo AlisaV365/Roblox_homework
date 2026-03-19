@@ -44,10 +44,9 @@ if (!user) {
 }
 
 function complete(taskId) {
-    fetch("https://robloxhomework-production.up.railway.app/complete/" + taskId, {
-        method: "POST"
-    }).then(() => {
-        alert("Отправлено на проверку 👌");
-        location.reload();
-    });
+    fetch(API + "/complete/" + taskId, { method: "POST" })
+        .then(() => {
+            alert("Отправлено родителю 👌");
+            location.reload();
+        });
 }
