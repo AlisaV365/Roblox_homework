@@ -175,6 +175,14 @@ def main_menu():
         ]
     ])
 
+@dp.message(lambda msg: msg.photo)
+async def handle_photo(message: types.Message):
+    user_id = message.from_user.id
+
+    await message.answer("📸 Фото получено! Отправь ID задания")
+
+    # тут можно расширить позже (связка с задачей)
+
 
 @dp.message(Command("start"))
 async def start(message: types.Message):
