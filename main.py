@@ -169,12 +169,41 @@ async def run_bot():
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 
-@dp.message(Command("add"))
-async def add_task(message: types.Message):
-    text = message.text.replace("/add ", "")
-
+@dp.message(Command("parent"))
+async def set_parent(message: types.Message):
     conn = db()
     cur = conn.cursor()
+
+    cur.execute("INSERT OR REPLACE INTO users (user_id, role) VALUES (?, ?)",
+                (message.from_user.id, "parent"))
+    conn.commit()
+
+    await message.answer("👨 Вы родитель")
+
+@dp.message(Command("child"))
+async def set_child(message: types.Message):
+    conn = db()
+    cur = conn.cursor()
+
+    cur.execute("INSERT OR REPLACE INTO users (user_id, role) VALUES (?, ?)",
+                (message.from_user.id, "child"))
+    conn.commit()
+
+    await message.answer("👶 Вы ребёнок")
+
+@dp.message(Command("add"))
+async def add_task(message: types.Message):
+    conn = db()
+    cur = conn.cursor()
+
+    cur.execute("SELECT role FROM users WHERE user_id=?", (message.from_user.id,))
+    role = cur.fetchone()
+
+    if not role or role[0] != "parent":
+        await message.answer("❌ Только родитель может добавлять задания")
+        return
+
+    text = message.text.replace("/add ", "")
 
     cur.execute(
         "INSERT INTO tasks (title, reward, assigned_to) VALUES (?, ?, ?)",
@@ -183,4 +212,4 @@ async def add_task(message: types.Message):
 
     conn.commit()
 
-    await message.answer(f"✅ Задание добавлено: {text}")
+    await message.answer(f"✅ Задание создано: {text}")
