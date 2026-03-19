@@ -63,3 +63,5 @@ function complete(taskId) {
             location.reload();
         });
 }
+
+alert(user.id);
