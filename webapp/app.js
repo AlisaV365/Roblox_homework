@@ -26,13 +26,17 @@ if (!user) {
                 const div = document.createElement("div");
 
                 div.innerHTML = `
-                    <div style="background:#222;color:white;padding:10px;margin:10px;border-radius:10px">
-                        🧹 ${task[1]} <br>
-                        💎 ${task[2]} <br>
-                        📊 ${task[3]} <br>
-                        <button onclick="complete(${task[0]})">✅ Выполнено</button>
-                    </div>
-                `;
+    <div style="background:#222;padding:10px;margin:10px;border-radius:10px;color:white">
+        🧹 ${task[1]} <br>
+        💎 ${task[2]} <br>
+        📊 ${task[3]} <br>
+
+        ${task[3] === "pending" ? <button onclick="complete(${task[0]})">✅ Выполнить</button> : ""}
+
+        ${task[3] === "waiting" ? "⏳ Ждёт подтверждения" : ""}
+        ${task[3] === "done" ? "🏆 Выполнено" : ""}
+    </div>
+`;
 
                 container.appendChild(div);
             });
