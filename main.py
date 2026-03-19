@@ -143,7 +143,7 @@ async def start_bot():
 
 async def run_bot():
     await bot.delete_webhook(drop_pending_updates=True)
-    await dp.start_polling(bot)0
+    await dp.start_polling(bot)
 
 
 def init_db():
