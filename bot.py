@@ -77,3 +77,14 @@ async def set_parent(message: types.Message):
     conn.commit()
 
     await message.answer("👨 Вы родитель")
+
+@dp.message(Command("child"))
+async def set_child(message: types.Message):
+    conn = db()
+    cur = conn.cursor()
+
+    cur.execute("INSERT OR REPLACE INTO users (user_id, role) VALUES (?, ?)",
+                (message.from_user.id, "child"))
+    conn.commit()
+
+    await message.answer("👶 Вы ребёнок")
