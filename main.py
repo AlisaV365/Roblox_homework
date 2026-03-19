@@ -30,27 +30,26 @@ def db():
 
 
 def init_db():
-    conn = db()
-    cur = conn.cursor()
-
     cur.execute("""
-    CREATE TABLE IF NOT EXISTS users (
-        user_id INTEGER PRIMARY KEY,
-        coins INTEGER DEFAULT 0,
-        level INTEGER DEFAULT 1,
-        xp INTEGER DEFAULT 0
-    )
-    """)
+CREATE TABLE IF NOT EXISTS users (
+    user_id INTEGER PRIMARY KEY,
+    role TEXT,
+    coins INTEGER DEFAULT 0,
+    level INTEGER DEFAULT 1,
+    xp INTEGER DEFAULT 0
+)
+""")
 
-    cur.execute("""
-    CREATE TABLE IF NOT EXISTS tasks (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT,
-        reward INTEGER,
-        assigned_to INTEGER,
-        status TEXT DEFAULT 'pending'
-    )
-    """)
+cur.execute("""
+CREATE TABLE IF NOT EXISTS tasks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT,
+    reward INTEGER,
+    assigned_to INTEGER,
+    status TEXT DEFAULT 'pending',
+    photo TEXT
+)
+""")
 
     conn.commit()
     conn.close()
